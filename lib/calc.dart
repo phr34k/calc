@@ -31,6 +31,184 @@ class CalcDialog extends StatefulWidget {
 
 // TODO: This is a quick port of old c# code that needs get bug fixed. In specific this code implements a dart/flutter based calculated based on calc.exe.
 class CalcDialogState extends State<CalcDialog> {
+  var num1 = "0", num2 = "0", ansStr = '0', oper = '', flag = 0;
+  double ans = 0.0;
+  void _clear() {
+    setState(() {
+      num1 = "0";
+      num2 = "0";
+      ansStr = '0';
+      ans = 0;
+      oper = '';
+      flag = 0;
+    });
+  }
+
+  void _add() {
+    setState(() {
+      oper = '+';
+      if (flag == 0) {
+        num2 = num1;
+      } else {
+        num2 = ansStr;
+      }
+      num1 = '0';
+    });
+  }
+
+  void _sub() {
+    setState(() {
+      oper = '-';
+      if (flag == 0) {
+        num2 = num1;
+      } else {
+        num2 = ansStr;
+      }
+      num1 = '0';
+    });
+  }
+
+  void _mul() {
+    setState(() {
+      oper = '*';
+      if (flag == 0) {
+        num2 = num1;
+      } else {
+        num2 = ansStr;
+      }
+      num1 = '0';
+    });
+  }
+
+  void _div() {
+    setState(() {
+      oper = '/';
+      if (flag == 0) {
+        num2 = num1;
+      } else {
+        num2 = ansStr;
+      }
+      num1 = '0';
+    });
+  }
+
+  void _one() {
+    setState(() {
+      num1 += "1";
+      ans = double.parse(num1);
+      ansStr = "$ans";
+    });
+  }
+
+  void _two() {
+    setState(() {
+      num1 += "2";
+      ans = double.parse(num1);
+      ansStr = "$ans";
+    });
+  }
+
+  void _three() {
+    setState(() {
+      num1 += "3";
+      ans = double.parse(num1);
+      ansStr = "$ans";
+    });
+  }
+
+  void _four() {
+    setState(() {
+      num1 += "4";
+      ans = double.parse(num1);
+      ansStr = "$ans";
+    });
+  }
+
+  void _five() {
+    setState(() {
+      num1 += "5";
+      ans = double.parse(num1);
+      ansStr = "$ans";
+    });
+  }
+
+  void _six() {
+    setState(() {
+      num1 += "6";
+      ans = double.parse(num1);
+      ansStr = "$ans";
+    });
+  }
+
+  void _seven() {
+    setState(() {
+      num1 += "7";
+      ans = double.parse(num1);
+      ansStr = "$ans";
+    });
+  }
+
+  void _eight() {
+    setState(() {
+      num1 += "8";
+      ans = double.parse(num1);
+      ansStr = "$ans";
+    });
+  }
+
+  void _nine() {
+    setState(() {
+      num1 += "9";
+      ans = double.parse(num1);
+      ansStr = "$ans";
+    });
+  }
+
+  void _zero() {
+    setState(() {
+      num1 += "0";
+      ans = double.parse(num1);
+      ansStr = "$ans";
+    });
+  }
+
+  void doOperation(String val) {
+    setState(() {
+      num1 += val;
+      // ans = int.parse(num1);
+      ansStr = "$ans";
+    });
+  }
+
+  void _disp() {
+    setState(() {
+      if (oper == '+') {
+        ans = double.parse(num1) + double.parse(num2);
+        flag++;
+        oper = "";
+        num1 = "";
+      } else if (oper == '-') {
+        ans = double.parse(num2) - double.parse(num1);
+        flag++;
+        oper = "";
+        num1 = "";
+      } else if (oper == '*') {
+        ans = double.parse(num2) * double.parse(num1);
+        flag++;
+        oper = "";
+        num1 = "";
+      } else if (oper == '/') {
+        ans = (double.parse(num2) / double.parse(num1));
+        // int a = double.parse(num2) ~/ double.parse(num1);
+        // ans = double.parse(a.toString());
+        flag++;
+        oper = "";
+        num1 = "";
+      }
+      ansStr = "$ans";
+    });
+  }
+
   var digit0 = FocusNode(onKey: test2);
   var digit1 = FocusNode(onKey: test2);
   var digit2 = FocusNode(onKey: test2);
@@ -62,7 +240,7 @@ class CalcDialogState extends State<CalcDialog> {
   var previous = 0.0;
   var set = false;
   var reset = false;
-  String? operation;
+  String? operation = "";
 
   void ok() {
     Navigator.of(context).pop(true);
@@ -97,29 +275,38 @@ class CalcDialogState extends State<CalcDialog> {
         operation == '*' ||
         operation == '/') {
       if (set) {
-        builder = "$builder $current $operation ";
+        setState(() {
+          builder = "$builder $current $operation ";
+        });
       } else {
-        builder = builder.substring(0, builder.length - 3);
-        builder = "$builder $operation ";
+        setState(() {
+          builder = builder.substring(0, builder.length - 3);
+          builder = "$builder $operation ";
+        });
       }
-
+      print("builder $builder");
       text2 = builder;
       text = previous.toString();
       reset = true;
     } else if (operation == '=') {
       if (last != '=') {
         builder = "$previous $last $current = ";
+        print("builder: $builder");
       } else {
         builder = "$previous $last ";
+        print("builder::>> $builder");
       }
 
       text2 = builder;
+      print("text2 $text2");
       text = previous.toString();
+      print("text.. $text");
       reset = true;
     }
   }
 
   void setOperation(String? op) {
+    print(".. $op");
     /*
     if (set == false) {
       print("needs to perform set");
@@ -142,13 +329,46 @@ class CalcDialogState extends State<CalcDialog> {
     operation = op;
     previous = _performOperand(operation, previous, current);
     text = previous.toInt().toString();
+    print("text?? $text");
     _upateStack(operation, operation, set, previous, current);
     set = false;
     setState(() {});
   }
 
+  void _dot() {
+    setState(() {
+      print(">> $num1");
+      if (!num1.contains(".")) {
+        num1 += ".";
+        print(num1);
+        ans = double.parse(num1);
+        print("<<$ans");
+        ansStr = "$ans";
+      }
+    });
+  }
+
+  void bspc() {
+    setState(() {
+      if (num1.isNotEmpty) {
+        num1 = num1.substring(0, num1.length - 1);
+        ansStr = num1;
+      } else {
+        if (ansStr.isNotEmpty) ansStr = ansStr.substring(0, ansStr.length - 1);
+      }
+      // if (num1.isNotEmpty) {
+      //   num1 = num1;
+      // } else {
+      //   current = 0;
+      // }
+    });
+  }
+
   Widget buildButton(String? text,
-      {FocusNode? focusNode, double width = 40, double height = 56}) {
+      {FocusNode? focusNode,
+      double width = 40,
+      double height = 56,
+      Function()? f}) {
     return Padding(
         padding: const EdgeInsets.all(2.5),
         child: OutlinedButton(
@@ -162,46 +382,47 @@ class CalcDialogState extends State<CalcDialog> {
                   )),
               width: width,
               height: height),
-          onPressed: () {
-            if (text == "BSPC") {
-              if (this.text.isNotEmpty) {
-                this.text = this.text.substring(0, this.text.length - 1);
-              }
-              if (this.text.isNotEmpty) {
-                current = double.parse(this.text);
-              } else {
-                current = 0;
-              }
-              setState(() {});
-            } else if (text == "C") {
-              reset = false;
-              current = 0;
-              previous = 0;
-              operation = '=';
-              text2 = "";
-              text = "0";
-              builder = "";
-              setState(() {});
-            } else if (text == "CE") {
-              text = "0";
-              current = 0;
-              set = false;
-              setState(() {});
-            } else if (text == "+" ||
-                text == "-" ||
-                text == "/" ||
-                text == "X" ||
-                text == "=") {
-              setOperation(text?.replaceAll("X", "*") ?? "");
-            } else {
-              this.text = reset ? "0$text" : "${this.text}$text";
-              this.text = double.parse(this.text).toInt().toString();
-              current = double.parse(this.text);
-              set = true;
-              reset = false;
-              setState(() {});
-            }
-          },
+          onPressed: f,
+          //   () {
+          //     if (text == "BSPC") {
+          //       if (this.text.isNotEmpty) {
+          //         this.text = this.text.substring(0, this.text.length - 1);
+          //       }
+          //       if (this.text.isNotEmpty) {
+          //         current = double.parse(this.text);
+          //       } else {
+          //         current = 0;
+          //       }
+          //       setState(() {});
+          //     } else if (text == "C") {
+          //       reset = false;
+          //       current = 0;
+          //       previous = 0;
+          //       operation = '=';
+          //       text2 = "";
+          //       text = "0";
+          //       builder = "";
+          //       setState(() {});
+          //     } else if (text == "CE") {
+          //       text = "0";
+          //       current = 0;
+          //       set = false;
+          //       setState(() {});
+          //     } else if (text == "+" ||
+          //         text == "-" ||
+          //         text == "/" ||
+          //         text == "X" ||
+          //         text == "=") {
+          //       setOperation(text?.replaceAll("X", "*") ?? "");
+          //     } else {
+          //       this.text = reset ? "0$text" : "${this.text}$text";
+          //       this.text = double.parse(this.text).toInt().toString();
+          //       current = double.parse(this.text);
+          //       set = true;
+          //       reset = false;
+          //       setState(() {});
+          //     }
+          //   },
         ));
   }
 
@@ -219,80 +440,84 @@ class CalcDialogState extends State<CalcDialog> {
   }
 
   Widget buildLoginState() {
-    return AlertDialog(
-      title: Row(
-        children: [Expanded(child: Text(widget.title)), const CloseButton()],
+    return SingleChildScrollView(
+      child: AlertDialog(
+        title: Row(
+          children: [Expanded(child: Text(widget.title)), const CloseButton()],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              ansStr,
+              style: const TextStyle(color: Colors.blueGrey, fontSize: 22),
+            ),
+            Text(
+              // text,
+              oper,
+              style: const TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 20, width: 400),
+            Focus(
+                onKey: test,
+                autofocus: true,
+                child: Column(
+                  children: [
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          buildButton("BSPC",
+                              focusNode: digitBackspace, f: bspc),
+                          buildButton("CE", focusNode: digitCE, f: _clear),
+                          buildButton("C", focusNode: digitC, f: _clear),
+                          buildButton("/", focusNode: digitDivide, f: _div),
+                        ]),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          buildButton("1", focusNode: digit1, f: _one),
+                          buildButton("2", focusNode: digit2, f: _two),
+                          buildButton("3", focusNode: digit3, f: _three),
+                          buildButton("X", focusNode: digitMultiply, f: _mul),
+                        ]),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          buildButton("4", focusNode: digit4, f: _four),
+                          buildButton("5", focusNode: digit5, f: _five),
+                          buildButton("6", focusNode: digit6, f: _six),
+                          buildButton("-", focusNode: digitSubtract, f: _sub),
+                        ]),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          buildButton("7", focusNode: digit7, f: _seven),
+                          buildButton("8", focusNode: digit8, f: _eight),
+                          buildButton("9", focusNode: digit9, f: _nine),
+                          buildButton("+", focusNode: digitAddition, f: _add),
+                        ]),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          const SizedBox(
+                            width: 57,
+                            height: 45,
+                          ),
+                          buildButton("0", focusNode: digit0, f: _zero),
+                          buildButton(".", focusNode: digitDot, f: _dot),
+                          buildButton("=", focusNode: digitEquals, f: _disp),
+                        ]),
+                  ],
+                )),
+          ],
+        ),
+        actions: const [],
       ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            text2,
-            style: const TextStyle(color: Colors.blueGrey),
-          ),
-          Text(
-            text,
-            style: const TextStyle(fontSize: 22),
-          ),
-          const SizedBox(height: 20, width: 400),
-          Focus(
-              onKey: test,
-              autofocus: true,
-              child: Column(
-                children: [
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        buildButton("BSPC", focusNode: digitBackspace),
-                        buildButton("CE", focusNode: digitCE),
-                        buildButton("C", focusNode: digitC),
-                        buildButton("/", focusNode: digitDivide),
-                      ]),
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        buildButton("1", focusNode: digit1),
-                        buildButton("2", focusNode: digit2),
-                        buildButton("3", focusNode: digit3),
-                        buildButton("X", focusNode: digitMultiply),
-                      ]),
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        buildButton("4", focusNode: digit4),
-                        buildButton("5", focusNode: digit5),
-                        buildButton("6", focusNode: digit6),
-                        buildButton("-", focusNode: digitSubtract),
-                      ]),
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        buildButton("7", focusNode: digit7),
-                        buildButton("8", focusNode: digit8),
-                        buildButton("9", focusNode: digit9),
-                        buildButton("+", focusNode: digitAddition),
-                      ]),
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        const SizedBox(
-                          width: 76,
-                          height: 45,
-                        ),
-                        buildButton("0", focusNode: digit0),
-                        buildButton(".", focusNode: digitDot),
-                        buildButton("=", focusNode: digitEquals),
-                      ]),
-                ],
-              )),
-        ],
-      ),
-      actions: const [],
     );
   }
 
@@ -381,7 +606,7 @@ class CalcDialogState extends State<CalcDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return buildLoginState();
+    return SingleChildScrollView(child: buildLoginState());
     // show the dialog
   }
 }
