@@ -407,6 +407,7 @@ class CalcDialogState extends State<CalcDialog> {
     return Padding(
         padding: const EdgeInsets.all(2.5),
         child: OutlinedButton(
+          key: Key(text!),
           focusNode: focusNode,
           style: OutlinedButton.styleFrom(fixedSize: Size(width, height)),
           child: Align(
@@ -447,6 +448,7 @@ class CalcDialogState extends State<CalcDialog> {
                   scrollDirection: Axis.horizontal,
                   child: Text(
                     v1,
+                    key: const Key("equation"),
                     style: TextStyle(
                         color: Colors.blueGrey, fontSize: equationFontSize),
                   ))),
@@ -457,6 +459,7 @@ class CalcDialogState extends State<CalcDialog> {
                   scrollDirection: Axis.horizontal,
                   child: Text(
                     v2,
+                    key: const Key("result"),
                     style: TextStyle(fontSize: resultFontSize),
                   ))),
           const SizedBox(height: 20, width: 400),
