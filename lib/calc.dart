@@ -440,15 +440,25 @@ class CalcDialogState extends State<CalcDialog> {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            v1,
-            style:
-                TextStyle(color: Colors.blueGrey, fontSize: equationFontSize),
-          ),
-          Text(
-            v2,
-            style: TextStyle(fontSize: resultFontSize),
-          ),
+          SizedBox(
+              width: 290,
+              child: SingleChildScrollView(
+                  reverse: true,
+                  scrollDirection: Axis.horizontal,
+                  child: Text(
+                    v1,
+                    style: TextStyle(
+                        color: Colors.blueGrey, fontSize: equationFontSize),
+                  ))),
+          SizedBox(
+              width: 290,
+              child: SingleChildScrollView(
+                  reverse: true,
+                  scrollDirection: Axis.horizontal,
+                  child: Text(
+                    v2,
+                    style: TextStyle(fontSize: resultFontSize),
+                  ))),
           const SizedBox(height: 20, width: 400),
           Focus(
               onKey: test,
@@ -618,7 +628,7 @@ class CalcDialogState extends State<CalcDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(child: buildLoginState());
+    return buildLoginState();
     // show the dialog
   }
 }
