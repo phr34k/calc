@@ -1,10 +1,9 @@
 library calc;
 
 import 'dart:async';
-import 'package:flutter/cupertino.dart';
+//import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:math_expressions/math_expressions.dart';
 
 // TODO: Add unit tests for the test project
 class Calculator {
@@ -147,7 +146,7 @@ class Calculator {
 
   void perform(bool wasEquals) {
     if (wasEquals || !wasEquals && _set == true) {
-      _previous = performOperand(operation, _previous!, current!);
+      _previous = performOperand(operation, _previous, current);
       _tag = true;
       _number = _previous.toString();
       updateDisplay?.call(_builder, _number);
@@ -158,12 +157,12 @@ class Calculator {
     if ("+-/*=".contains(number)) {
       if (number == "=") {
         perform(true);
-        upateStack(operation, operation, _set, _previous!, current!);
+        upateStack(operation, operation, _set, _previous, current);
         _set = false;
       } else {
         perform(false);
         operation = number;
-        upateStack(operation, operation, _set, _previous!, current!);
+        upateStack(operation, operation, _set, _previous, current);
         _set = false;
       }
     } else {
@@ -201,7 +200,10 @@ class Calculator {
         _builder += operation;
         _builder += " ";
       } else {
-        _builder = _builder.substring(0, _builder.length - 3);
+        _builder += _builder.isEmpty ? _toNumber(previous) : "";
+        _builder = _builder.length > 3
+            ? _builder.substring(0, _builder.length - 3)
+            : _builder;
         _builder += " ";
         _builder += operation;
         _builder += " ";
@@ -413,7 +415,7 @@ class CalcDialogState extends State<CalcDialog> {
           child: Align(
               alignment: Alignment.center,
               child: Text(
-                text ?? "",
+                text,
                 textAlign: TextAlign.center,
               )),
           onPressed: f,
