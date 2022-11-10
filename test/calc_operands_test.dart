@@ -11,7 +11,7 @@ void main() {
     counter.perform(CalculatorInput.d6);
     counter.perform(CalculatorInput.equals);
     expect(counter.result, 66.0);
-    expect(counter.formula, "66=");
+    expect(counter.formula, "66 =");
   });
 
   test('Internal set', () {
@@ -20,7 +20,7 @@ void main() {
     counter.perform(CalculatorInput.d3);
     counter.perform(CalculatorInput.equals);
     expect(counter.result, 33.0);
-    expect(counter.formula, "33=");
+    expect(counter.formula, "33 =");
   });
 
   test('Internal multiply', () {
@@ -30,7 +30,7 @@ void main() {
     counter.perform(CalculatorInput.d3);
     counter.perform(CalculatorInput.equals);
     expect(counter.result, 9.0);
-    expect(counter.formula, "3x3=");
+    expect(counter.formula, "3 x 3 =");
   });
 
   test('Internal add', () {
@@ -40,7 +40,7 @@ void main() {
     counter.perform(CalculatorInput.d3);
     counter.perform(CalculatorInput.equals);
     expect(counter.result, 6.0);
-    expect(counter.formula, "3+3=");
+    expect(counter.formula, "3 + 3 =");
   });
 
   test('Internal divide', () {
@@ -50,7 +50,7 @@ void main() {
     counter.perform(CalculatorInput.d3);
     counter.perform(CalculatorInput.equals);
     expect(counter.result, 1.0);
-    expect(counter.formula, "3÷3=");
+    expect(counter.formula, "3 ÷ 3 =");
   });
 
   test('Internal subtract', () {
@@ -60,7 +60,7 @@ void main() {
     counter.perform(CalculatorInput.d3);
     counter.perform(CalculatorInput.equals);
     expect(counter.result, 0.0);
-    expect(counter.formula, "3-3=");
+    expect(counter.formula, "3 - 3 =");
   });
 
   test('Internal redo operand', () {
@@ -71,7 +71,7 @@ void main() {
     counter.perform(CalculatorInput.d3);
     counter.perform(CalculatorInput.equals);
     expect(counter.result, 5.0);
-    expect(counter.formula, "8-3=");
+    expect(counter.formula, "8 - 3 =");
   });
 
   test('Multiple operand multiply', () {
@@ -83,7 +83,7 @@ void main() {
     counter.perform(CalculatorInput.d5);
     counter.perform(CalculatorInput.equals);
     expect(counter.result, 8.0 * 3.0 * 5.0);
-    expect(counter.formula, "8x3x5=");
+    expect(counter.formula, "8 x 3 x 5 =");
   });
 
   test('Multiple operand addition', () {
@@ -95,7 +95,7 @@ void main() {
     counter.perform(CalculatorInput.d5);
     counter.perform(CalculatorInput.equals);
     expect(counter.result, 8.0 + 3.0 + 5.0);
-    expect(counter.formula, "8+3+5=");
+    expect(counter.formula, "8 + 3 + 5 =");
   });
 
   test('Multiple operand subtraction', () {
@@ -107,7 +107,7 @@ void main() {
     counter.perform(CalculatorInput.d5);
     counter.perform(CalculatorInput.equals);
     expect(counter.result, 8.0 - 3.0 - 5.0);
-    expect(counter.formula, "8-3-5=");
+    expect(counter.formula, "8 - 3 - 5 =");
   });
 
   test('Special button ce', () {

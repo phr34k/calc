@@ -41,9 +41,20 @@ class CalculatorEqualsRange extends TextRange {
       : super(start: start, end: end);
 }
 
+abstract class CalculatorExpression {}
+
+class CalculatorValueExpression extends CalculatorExpression {
+  final double value;
+  CalculatorValueExpression(this.value);
+}
+
+class CalculatorOperandExpression extends CalculatorExpression {
+  final String symbol;
+  CalculatorOperandExpression(this.symbol);
+}
+
 class CalculatorInternal {
-  TextRange _formula = const TextRange(start: 0, end: 0);
-  List<TextRange> ranges = [];
+  List<CalculatorExpression> expression = [];
   String number = "";
   double _result = 0;
 
@@ -51,72 +62,59 @@ class CalculatorInternal {
     return v.remainder(1) == 0.0 ? v.toInt().toString() : v.toString();
   }
 
-  void _flush() {
-    ranges.clear();
-    number = _result.toString();
-    ranges.add(CalculatorNumberRange(start: 0, end: number.length - 1));
-  }
-
   double _evaluate() {
     double _result = 0;
-    if (ranges.length < 3) {
-      _result = _substringToDouble(ranges[0]);
-      return _result;
-    } else {
-      switch (_substring(ranges[1])) {
+
+    if (expression.isNotEmpty) {
+      _result = (expression[0] as CalculatorValueExpression).value;
+    }
+
+    if (expression.length > 2) {
+      switch ((expression[1] as CalculatorOperandExpression).symbol) {
         case "x":
           _result =
-              (_substringToDouble(ranges[0])) * (_substringToDouble(ranges[2]));
-          return _result;
+              (_result) * ((expression[2] as CalculatorValueExpression).value);
+          break;
         case "÷":
           _result =
-              (_substringToDouble(ranges[0])) / (_substringToDouble(ranges[2]));
-          return _result;
+              (_result) / ((expression[2] as CalculatorValueExpression).value);
+          break;
         case "-":
           _result =
-              (_substringToDouble(ranges[0])) - (_substringToDouble(ranges[2]));
-          return _result;
+              (_result) - ((expression[2] as CalculatorValueExpression).value);
+          break;
         case "+":
           _result =
-              (_substringToDouble(ranges[0])) + (_substringToDouble(ranges[2]));
-          return _result;
+              (_result) + ((expression[2] as CalculatorValueExpression).value);
+          break;
       }
     }
 
-    return 0;
+    return _result;
   }
 
-  void _equals({bool flush = true}) {
-    switch (ranges.length) {
-      case 1:
-        _result = _substringToDouble(ranges[0]);
-        if (flush == true) _flush();
-        break;
-      case 2:
-        _result = _substringToDouble(ranges[0]);
-        if (flush == true) _flush();
-        break;
-      case 3:
-        break;
-    }
+  String _generateFormulate(List<CalculatorExpression> expressions) {
+    return expression
+        .map((e) => e is CalculatorValueExpression
+            ? _toString(e.value)
+            : e is CalculatorOperandExpression
+                ? e.symbol
+                : "")
+        .join(" ");
   }
 
   void _c() {
-    _formula = const TextRange(start: 0, end: 0);
-    _result = 0;
     number = "";
-    ranges.replaceRange(
-        0, ranges.length, [const CalculatorNumberRange(start: 0, end: 0)]);
+    _result = 0;
   }
 
   void _ce() {
-    _formula = const TextRange(start: 0, end: 0);
-    _result = 0;
+    expression.clear();
     number = "";
-    ranges.replaceRange(
-        0, ranges.length, [const CalculatorNumberRange(start: 0, end: 0)]);
+    _result = 0;
   }
 
+  /*
   void _opequals(String operation) {
     if (ranges.isEmpty || (ranges.last is! CalculatorEqualsRange)) {
       number = "$number$operation";
@@ -154,7 +152,9 @@ class CalculatorInternal {
       _result = _evaluate();
     }
   }
+  */
 
+  /*
   //inputs an operation command
   void _operation(String operation) {
     if (ranges.length == 3) {
@@ -166,11 +166,13 @@ class CalculatorInternal {
       ranges.add(
           CalculatorOperandRange(start: number.length - 1, end: number.length));
       _formula = TextRange(start: 0, end: number.length);
+      _result = _evaluate();
     } else {
       number =
           number.replaceRange(ranges.last.start, ranges.last.end, operation);
     }
   }
+  */
 
   void perform(CalculatorInput e) {
     var g = [
@@ -196,6 +198,11 @@ class CalculatorInternal {
     ];
 
     switch (e) {
+      case CalculatorInput.back:
+        if (number.length == 1) _result = 0;
+        number = number.isEmpty ? "" : number.substring(0, number.length - 1);
+        break;
+
       case CalculatorInput.c:
         _c();
         break;
@@ -205,7 +212,33 @@ class CalculatorInternal {
         break;
 
       case CalculatorInput.equals:
-        _opequals("${g[e.index]}");
+        if (expression.length == 2 &&
+            expression[1] is CalculatorOperandExpression &&
+            (expression[1] as CalculatorOperandExpression).symbol == "=") {
+          expression[0] = CalculatorValueExpression(double.parse(number));
+          number = "";
+        } else if (expression.length == 4) {
+          if (number.isEmpty) {
+            expression[0] = CalculatorValueExpression(_result);
+          } else {
+            expression[0] = CalculatorValueExpression(double.parse(number));
+            number = "";
+          }
+        } else {
+          //push the number on the stack
+          if (number.isNotEmpty) {
+            expression.add(CalculatorValueExpression(double.parse(number)));
+            number = "";
+          }
+
+          //push the equals on the stack
+          if (expression.isNotEmpty &&
+              expression.last is CalculatorValueExpression) {
+            expression.add(CalculatorOperandExpression("${g[e.index]}"));
+          }
+        }
+
+        _result = _evaluate();
         break;
 
       // operands handeling
@@ -213,10 +246,47 @@ class CalculatorInternal {
       case CalculatorInput.subtraction:
       case CalculatorInput.division:
       case CalculatorInput.multiply:
-        _operation("${g[e.index]}");
+        if (number.isEmpty && expression.length == 4) {
+          expression[0] = CalculatorValueExpression(_result);
+          expression[1] = CalculatorOperandExpression("${g[e.index]}");
+          expression.removeRange(2, 4);
+        } else {
+          //push the number on the stack
+          if (number.isNotEmpty) {
+            expression.add(CalculatorValueExpression(double.parse(number)));
+            number = "";
+          }
+
+          //push the equals on the stack
+          if (expression.isNotEmpty &&
+              expression.last is CalculatorValueExpression) {
+            expression.add(CalculatorOperandExpression("${g[e.index]}"));
+          } else {
+            expression.last = CalculatorOperandExpression("${g[e.index]}");
+          }
+
+          _result = _evaluate();
+        }
+
+        /*
+        if (expression.isEmpty) {
+          expression.add(CalculatorValueExpression(double.parse(number)));
+          expression.add(CalculatorOperandExpression("${g[e.index]}"));
+        } else if (expression.last is CalculatorOperandExpression) {
+          expression.last = CalculatorOperandExpression("${g[e.index]}");
+        }
+
+        number = "";
+        _result = _evaluate();
+        */
         break;
 
-      // number handeling
+      // dot handeling
+      case CalculatorInput.dot:
+        number =
+            !number.contains("${g[e.index]}") ? "$number${g[e.index]}" : number;
+        break;
+      // number handling
       case CalculatorInput.d0:
       case CalculatorInput.d1:
       case CalculatorInput.d2:
@@ -227,19 +297,7 @@ class CalculatorInternal {
       case CalculatorInput.d7:
       case CalculatorInput.d8:
       case CalculatorInput.d9:
-        if (ranges.isNotEmpty && ranges.last is CalculatorEqualsRange) {
-          _equals();
-        }
-
-        if (ranges.isEmpty || ranges.last is! CalculatorNumberRange) {
-          number = "$number${g[e.index]}";
-          ranges.add(CalculatorNumberRange(
-              start: number.length - 1, end: number.length - 1 + 1));
-        } else {
-          number = "$number${g[e.index]}";
-          ranges.last = CalculatorNumberRange(
-              start: ranges.last.start, end: ranges.last.end + 1);
-        }
+        number = "$number${g[e.index]}";
         break;
       default:
         break;
@@ -248,21 +306,10 @@ class CalculatorInternal {
     updateDisplay?.call(formula, d0);
   }
 
-  String _substring(TextRange range) {
-    return number.substring(range.start, range.end);
-  }
-
-  double _substringToDouble(TextRange range) {
-    var z = number.substring(range.start, range.end);
-    return double.parse(z);
-  }
-
   void Function(String text1, String text2)? updateDisplay;
 
-  String get d0 => ranges.isNotEmpty && ranges.last is CalculatorNumberRange
-      ? _substring(ranges.last)
-      : result.toString();
-  String get formula => _substring(_formula);
+  String get d0 => number.isNotEmpty ? number : _toString(_result);
+  String get formula => /*_substring(_formula)*/ _generateFormulate(expression);
   double? get result => _result;
 }
 
@@ -660,6 +707,7 @@ mixin CalculatorStateMixin<T extends CalculatorMixin> on State<T> {
 
   Widget buildButton(String? text,
       {required FocusNode focusNode,
+      bool primary = false,
       double width = 70,
       double height = 56,
       required Function() f}) {
@@ -668,7 +716,12 @@ mixin CalculatorStateMixin<T extends CalculatorMixin> on State<T> {
         child: OutlinedButton(
           key: Key(text!),
           focusNode: focusNode,
-          style: OutlinedButton.styleFrom(fixedSize: Size(width, height)),
+          style: OutlinedButton.styleFrom(
+              backgroundColor:
+                  !primary ? const Color.fromARGB(10, 20, 20, 20) : null,
+              fixedSize: Size(width, height),
+              textStyle: TextStyle(
+                  fontWeight: primary ? FontWeight.bold : FontWeight.normal)),
           child: Align(
               alignment: Alignment.center,
               child: Text(
@@ -751,12 +804,15 @@ mixin CalculatorStateMixin<T extends CalculatorMixin> on State<T> {
                               mainAxisSize: MainAxisSize.max,
                               children: [
                                 buildButton("1",
+                                    primary: true,
                                     focusNode: digit1,
                                     f: () => buttonPressed("1")),
                                 buildButton("2",
+                                    primary: true,
                                     focusNode: digit2,
                                     f: () => buttonPressed("2")),
                                 buildButton("3",
+                                    primary: true,
                                     focusNode: digit3,
                                     f: () => buttonPressed("3")),
                                 buildButton("⨉",
@@ -768,12 +824,15 @@ mixin CalculatorStateMixin<T extends CalculatorMixin> on State<T> {
                               mainAxisSize: MainAxisSize.max,
                               children: [
                                 buildButton("4",
+                                    primary: true,
                                     focusNode: digit4,
                                     f: () => buttonPressed("4")),
                                 buildButton("5",
+                                    primary: true,
                                     focusNode: digit5,
                                     f: () => buttonPressed("5")),
                                 buildButton("6",
+                                    primary: true,
                                     focusNode: digit6,
                                     f: () => buttonPressed("6")),
                                 buildButton("-",
@@ -785,12 +844,15 @@ mixin CalculatorStateMixin<T extends CalculatorMixin> on State<T> {
                               mainAxisSize: MainAxisSize.max,
                               children: [
                                 buildButton("7",
+                                    primary: true,
                                     focusNode: digit7,
                                     f: () => buttonPressed("7")),
                                 buildButton("8",
+                                    primary: true,
                                     focusNode: digit8,
                                     f: () => buttonPressed("8")),
                                 buildButton("9",
+                                    primary: true,
                                     focusNode: digit9,
                                     f: () => buttonPressed("9")),
                                 buildButton("+",
@@ -803,9 +865,11 @@ mixin CalculatorStateMixin<T extends CalculatorMixin> on State<T> {
                               children: [
                                 buildEmpty(),
                                 buildButton("0",
+                                    primary: true,
                                     focusNode: digit0,
                                     f: () => buttonPressed("0")),
                                 buildButton(".",
+                                    primary: true,
                                     focusNode: digitDot,
                                     f: () => buttonPressed(".")),
                                 buildButton("=",
