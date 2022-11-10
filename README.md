@@ -1,39 +1,52 @@
-<!-- 
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages). 
+Calculator
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages). 
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+a simple calculator dialog and utulity state machine to perform arithimetics.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+- open up a calculator dialog that can perform basic arithimetics
+- supports key bindings so you can type equations via numpad e.g. 8 * 8 [enter]
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+Add the following lines to your pubspec.yaml
+
+```yaml
+dependencies:
+  calc:
+    git: https://github.com/phr34k/calc
+```
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
+The following code show a minimum example of displaying the calculator dialog.
 
 ```dart
-const like = 'sample';
+  @override
+  Widget build(BuildContext context) {
+    // This method is rerun every time setState is called, for instance as done
+    // by the _incrementCounter method above.
+    //
+    // The Flutter framework has been optimized to make rerunning build methods
+    // fast, so that you can just rebuild anything that needs updating rather
+    // than having to individually change instances of widgets.
+    return Scaffold(
+      appBar: AppBar(
+        // Here we take the value from the MyHomePage object that was created by
+        // the App.build method, and use it to set our appbar title.
+        title: Text(widget.title),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.calculate),
+        onPressed: () {
+          showCalculator(context, true);
+        },
+      ),
+    );
+  }
 ```
 
 ## Additional information
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+Aims to implement a simple calculator that can be embedded into applications, extenced customisation options will follow in consequative releases.
