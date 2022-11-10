@@ -3,6 +3,8 @@ Calculator
 
 a simple calculator dialog and utulity state machine to perform arithimetics.
 
+![](img/example.png?raw=true)
+
 ## Features
 
 - open up a calculator dialog that can perform basic arithimetics
