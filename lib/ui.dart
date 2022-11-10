@@ -2,45 +2,44 @@ library calc;
 
 import 'dart:async';
 import './shared.dart';
-//import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 @immutable
-class CalcDialog extends StatefulWidget with CalculatorMixin {
+class CalcDialog2 extends StatefulWidget with CalculatorMixin {
   final bool cancel;
   @override
   final String title;
-  const CalcDialog({Key? key, this.cancel = false, this.title = "Calculator"})
+  const CalcDialog2({Key? key, this.cancel = false, this.title = "Calculator"})
       : super(key: key);
   @override
-  CalcDialogState createState() => CalcDialogState();
+  CalcDialog2State createState() => CalcDialog2State();
 }
 
-class CalcDialogState extends State<CalcDialog> with CalculatorStateMixin {
-  Calculator calculator = Calculator();
+class CalcDialog2State extends State<CalcDialog2> with CalculatorStateMixin {
+  CalculatorInternal calculator = CalculatorInternal();
 
   @override
   buttonPressed(String buttonText) {
     setState(() {
       if (buttonText == "C") {
-        calculator.c();
+        calculator.perform(CalculatorInput.c);
       } else if (buttonText == "CE") {
-        calculator.ce();
+        calculator.perform(CalculatorInput.ce);
       } else if (buttonText == "BSPC") {
-        calculator.backspace();
+        calculator.perform(CalculatorInput.back);
       } else if (buttonText == "+") {
-        calculator.appendNumber("+");
+        calculator.perform(CalculatorInput.addition);
       } else if (buttonText == "-") {
-        calculator.appendNumber("-");
+        calculator.perform(CalculatorInput.subtraction);
       } else if (buttonText == "/") {
-        calculator.appendNumber("/");
+        calculator.perform(CalculatorInput.division);
       } else if (buttonText == "*" || buttonText == "X" || buttonText == "x") {
-        calculator.appendNumber("*");
+        calculator.perform(CalculatorInput.multiply);
       } else if (buttonText == "=") {
-        calculator.appendNumber("=");
+        calculator.perform(CalculatorInput.equals);
       } else {
-        calculator.appendNumber(buttonText);
+        calculator.perform(CalculatorInput
+            .values[CalculatorInput.d0.index + int.parse(buttonText)]);
       }
     });
   }
@@ -67,7 +66,7 @@ Future<T?> showCalculator<T extends Object>(BuildContext context, bool cancel) {
   return showDialog(
     context: context,
     builder: (BuildContext context) {
-      return CalcDialog(cancel: cancel);
+      return CalcDialog2(cancel: cancel);
     },
   );
 }
