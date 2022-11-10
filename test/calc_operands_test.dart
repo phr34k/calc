@@ -2,6 +2,27 @@ import 'package:calc/shared.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  test('Internal set - consequative', () {
+    final counter = CalculatorInternal();
+    counter.perform(CalculatorInput.d3);
+    counter.perform(CalculatorInput.d3);
+    counter.perform(CalculatorInput.equals);
+    counter.perform(CalculatorInput.d6);
+    counter.perform(CalculatorInput.d6);
+    counter.perform(CalculatorInput.equals);
+    expect(counter.result, 66.0);
+    expect(counter.formula, "66=");
+  });
+
+  test('Internal set', () {
+    final counter = CalculatorInternal();
+    counter.perform(CalculatorInput.d3);
+    counter.perform(CalculatorInput.d3);
+    counter.perform(CalculatorInput.equals);
+    expect(counter.result, 33.0);
+    expect(counter.formula, "33=");
+  });
+
   test('Internal multiply', () {
     final counter = CalculatorInternal();
     counter.perform(CalculatorInput.d3);
@@ -29,7 +50,7 @@ void main() {
     counter.perform(CalculatorInput.d3);
     counter.perform(CalculatorInput.equals);
     expect(counter.result, 1.0);
-    expect(counter.formula, "3/3=");
+    expect(counter.formula, "3÷3=");
   });
 
   test('Internal subtract', () {
@@ -97,6 +118,6 @@ void main() {
     counter.perform(CalculatorInput.equals);
     counter.perform(CalculatorInput.ce);
     expect(counter.formula, "");
-    expect(counter.result, null);
+    expect(counter.result, 0.0);
   });
 }

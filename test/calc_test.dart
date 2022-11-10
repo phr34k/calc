@@ -34,7 +34,7 @@ void main() {
     await tester.tap(buttonPlus);
     await tester.pump();
 
-    String value = tester.widget<Text>(fieldResult).data!;
+    String value = tester.widget<SelectableText>(fieldResult).data!;
     expect(value, "33");
   });
 
@@ -66,7 +66,7 @@ void main() {
     await tester.tap(buttonMinus);
     await tester.pump();
 
-    String value = tester.widget<Text>(fieldResult).data!;
+    String value = tester.widget<SelectableText>(fieldResult).data!;
     expect(value, "11");
   });
 
@@ -82,7 +82,7 @@ void main() {
 
     final buttonPlus = find.byKey(const Key('+'));
     final buttonMinus = find.byKey(const Key('-'));
-    final buttonMultiply = find.byKey(const Key('X'));
+    final buttonMultiply = find.byKey(const Key('⨉'));
 
     final fieldResult = find.byKey(const Key('result'));
 
@@ -99,7 +99,7 @@ void main() {
     await tester.tap(buttonMultiply);
     await tester.pump();
 
-    String value = tester.widget<Text>(fieldResult).data!;
+    String value = tester.widget<SelectableText>(fieldResult).data!;
     expect(value, "726");
   });
 
@@ -116,7 +116,7 @@ void main() {
     final buttonPlus = find.byKey(const Key('+'));
     final buttonMinus = find.byKey(const Key('-'));
     final buttonMultiply = find.byKey(const Key('X'));
-    final buttonDivide = find.byKey(const Key('/'));
+    final buttonDivide = find.byKey(const Key('÷'));
 
     final fieldResult = find.byKey(const Key('result'));
 
@@ -133,7 +133,7 @@ void main() {
     await tester.tap(buttonDivide);
     await tester.pump();
 
-    String value = tester.widget<Text>(fieldResult).data!;
+    String value = tester.widget<SelectableText>(fieldResult).data!;
     expect(value, "1.5");
   });
 }

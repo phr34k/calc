@@ -46,6 +46,11 @@ class CalcDialog2State extends State<CalcDialog2> with CalculatorStateMixin {
 
   @override
   void initState() {
+    setState(() {
+      v1 = calculator.d0;
+      v2 = calculator.formula;
+    });
+
     calculator.updateDisplay = (v1, v2) {
       setState(() {
         this.v1 = v1;

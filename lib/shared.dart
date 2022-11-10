@@ -42,14 +42,48 @@ class CalculatorEqualsRange extends TextRange {
 }
 
 class CalculatorInternal {
-  List<TextRange> ranges = [const CalculatorNumberRange(start: 0, end: 0)];
+  TextRange _formula = const TextRange(start: 0, end: 0);
+  List<TextRange> ranges = [];
   String number = "";
-  double? _result;
+  double _result = 0;
+
+  String _toString(double v) {
+    return v.remainder(1) == 0.0 ? v.toInt().toString() : v.toString();
+  }
 
   void _flush() {
     ranges.clear();
-    number = (_result ?? 0).toString();
+    number = _result.toString();
     ranges.add(CalculatorNumberRange(start: 0, end: number.length - 1));
+  }
+
+  double _evaluate() {
+    double _result = 0;
+    if (ranges.length < 3) {
+      _result = _substringToDouble(ranges[0]);
+      return _result;
+    } else {
+      switch (_substring(ranges[1])) {
+        case "x":
+          _result =
+              (_substringToDouble(ranges[0])) * (_substringToDouble(ranges[2]));
+          return _result;
+        case "÷":
+          _result =
+              (_substringToDouble(ranges[0])) / (_substringToDouble(ranges[2]));
+          return _result;
+        case "-":
+          _result =
+              (_substringToDouble(ranges[0])) - (_substringToDouble(ranges[2]));
+          return _result;
+        case "+":
+          _result =
+              (_substringToDouble(ranges[0])) + (_substringToDouble(ranges[2]));
+          return _result;
+      }
+    }
+
+    return 0;
   }
 
   void _equals({bool flush = true}) {
@@ -63,29 +97,78 @@ class CalculatorInternal {
         if (flush == true) _flush();
         break;
       case 3:
-        switch (_substring(ranges[1])) {
-          case "x":
-            _result = (_substringToDouble(ranges[0]) ?? 0) *
-                (_substringToDouble(ranges[2]) ?? 0);
-            if (flush == true) _flush();
+        break;
+    }
+  }
+
+  void _c() {
+    _formula = const TextRange(start: 0, end: 0);
+    _result = 0;
+    number = "";
+    ranges.replaceRange(
+        0, ranges.length, [const CalculatorNumberRange(start: 0, end: 0)]);
+  }
+
+  void _ce() {
+    _formula = const TextRange(start: 0, end: 0);
+    _result = 0;
+    number = "";
+    ranges.replaceRange(
+        0, ranges.length, [const CalculatorNumberRange(start: 0, end: 0)]);
+  }
+
+  void _opequals(String operation) {
+    if (ranges.isEmpty || (ranges.last is! CalculatorEqualsRange)) {
+      number = "$number$operation";
+      ranges.add(
+          CalculatorEqualsRange(start: number.length - 1, end: number.length));
+      _formula = TextRange(start: 0, end: number.length);
+      _result = _evaluate();
+    } else {
+      number = number.replaceRange(
+          ranges.first.start, ranges.first.end, _toString(_result));
+      int v = _toString(_result).length - ranges.first.end;
+      for (int i = 0; i < ranges.length; ++i) {
+        switch (i) {
+          case 0:
+          case 2:
+            ranges[i] = CalculatorNumberRange(
+                start: ranges[i].start + v, end: ranges[i].end + v);
             break;
-          case "/":
-            _result = (_substringToDouble(ranges[0]) ?? 0) /
-                (_substringToDouble(ranges[2]) ?? 0);
-            if (flush == true) _flush();
+          case 1:
+            ranges[i] = ranges[i] is CalculatorOperandRange
+                ? CalculatorOperandRange(
+                    start: ranges[i].start + v, end: ranges[i].end + v)
+                : CalculatorEqualsRange(
+                    start: ranges[i].start + v, end: ranges[i].end + v);
             break;
-          case "-":
-            _result = (_substringToDouble(ranges[0]) ?? 0) -
-                (_substringToDouble(ranges[2]) ?? 0);
-            if (flush == true) _flush();
-            break;
-          case "+":
-            _result = (_substringToDouble(ranges[0]) ?? 0) +
-                (_substringToDouble(ranges[2]) ?? 0);
-            if (flush == true) _flush();
+          case 3:
+            ranges[i] = CalculatorEqualsRange(
+                start: ranges[i].start + v, end: ranges[i].end + v);
             break;
         }
-        break;
+      }
+
+      ranges[0] = CalculatorNumberRange(start: 0, end: ranges[0].end);
+      _formula = TextRange(start: 0, end: number.length);
+      _result = _evaluate();
+    }
+  }
+
+  //inputs an operation command
+  void _operation(String operation) {
+    if (ranges.length == 3) {
+      _equals();
+    }
+
+    if (ranges.last is! CalculatorOperandRange) {
+      number = "$number$operation";
+      ranges.add(
+          CalculatorOperandRange(start: number.length - 1, end: number.length));
+      _formula = TextRange(start: 0, end: number.length);
+    } else {
+      number =
+          number.replaceRange(ranges.last.start, ranges.last.end, operation);
     }
   }
 
@@ -95,7 +178,7 @@ class CalculatorInternal {
       '-',
       '+',
       'x',
-      '/',
+      '÷',
       null,
       null,
       null,
@@ -114,22 +197,15 @@ class CalculatorInternal {
 
     switch (e) {
       case CalculatorInput.c:
+        _c();
+        break;
+
       case CalculatorInput.ce:
-        _result = null;
-        number = "";
-        ranges.replaceRange(
-            0, ranges.length, [const CalculatorNumberRange(start: 0, end: 0)]);
+        _ce();
         break;
 
       case CalculatorInput.equals:
-        if (ranges.last is! CalculatorEqualsRange) {
-          number = "$number${g[e.index]}";
-          ranges.add(CalculatorEqualsRange(
-              start: number.length - 1, end: number.length));
-        } else {
-          number = number.replaceRange(
-              ranges.last.start, ranges.last.end, "${g[e.index]}");
-        }
+        _opequals("${g[e.index]}");
         break;
 
       // operands handeling
@@ -137,18 +213,7 @@ class CalculatorInternal {
       case CalculatorInput.subtraction:
       case CalculatorInput.division:
       case CalculatorInput.multiply:
-        if (ranges.length == 3) {
-          _equals();
-        }
-
-        if (ranges.last is! CalculatorOperandRange) {
-          number = "$number${g[e.index]}";
-          ranges.add(CalculatorOperandRange(
-              start: number.length - 1, end: number.length));
-        } else {
-          number = number.replaceRange(
-              ranges.last.start, ranges.last.end, "${g[e.index]}");
-        }
+        _operation("${g[e.index]}");
         break;
 
       // number handeling
@@ -162,11 +227,11 @@ class CalculatorInternal {
       case CalculatorInput.d7:
       case CalculatorInput.d8:
       case CalculatorInput.d9:
-        if (ranges.last is CalculatorEqualsRange) {
+        if (ranges.isNotEmpty && ranges.last is CalculatorEqualsRange) {
           _equals();
         }
 
-        if (ranges.last is! CalculatorNumberRange) {
+        if (ranges.isEmpty || ranges.last is! CalculatorNumberRange) {
           number = "$number${g[e.index]}";
           ranges.add(CalculatorNumberRange(
               start: number.length - 1, end: number.length - 1 + 1));
@@ -187,20 +252,17 @@ class CalculatorInternal {
     return number.substring(range.start, range.end);
   }
 
-  double? _substringToDouble(TextRange range) {
+  double _substringToDouble(TextRange range) {
     var z = number.substring(range.start, range.end);
-    return z.isNotEmpty ? double.parse(z) : null;
+    return double.parse(z);
   }
 
   void Function(String text1, String text2)? updateDisplay;
 
-  String get d0 =>
-      result?.toString() ??
-      _substring(
-          ranges.lastWhere((element) => element is CalculatorNumberRange));
-  String get formula => ranges.length > 1
-      ? number.substring(0, ranges.length == 3 ? ranges[1].end : ranges[1].end)
-      : "";
+  String get d0 => ranges.isNotEmpty && ranges.last is CalculatorNumberRange
+      ? _substring(ranges.last)
+      : result.toString();
+  String get formula => _substring(_formula);
   double? get result => _result;
 }
 
