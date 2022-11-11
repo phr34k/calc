@@ -1,6 +1,6 @@
 // ignore_for_file: unused_local_variable
 
-import 'package:calc/calc.dart';
+import 'package:calc/uiv1.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
