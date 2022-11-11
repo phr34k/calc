@@ -83,7 +83,7 @@ void main() {
     counter.perform(CalculatorInput.d5);
     counter.perform(CalculatorInput.equals);
     expect(counter.result, 8.0 * 3.0 * 5.0);
-    expect(counter.formula, "8 x 3 x 5 =");
+    expect(counter.formula, "24 x 5 =");
   });
 
   test('Multiple operand addition', () {
@@ -95,7 +95,42 @@ void main() {
     counter.perform(CalculatorInput.d5);
     counter.perform(CalculatorInput.equals);
     expect(counter.result, 8.0 + 3.0 + 5.0);
-    expect(counter.formula, "8 + 3 + 5 =");
+    expect(counter.formula, "11 + 5 =");
+  });
+
+  test('Complex', () {
+    final counter = CalculatorInternal();
+    counter.perform(CalculatorInput.d2);
+    counter.perform(CalculatorInput.d5);
+    counter.perform(CalculatorInput.addition);
+    counter.perform(CalculatorInput.d3);
+    counter.perform(CalculatorInput.d6);
+    counter.perform(CalculatorInput.addition);
+    counter.perform(CalculatorInput.d1);
+    counter.perform(CalculatorInput.d4);
+    counter.perform(CalculatorInput.equals);
+    counter.perform(CalculatorInput.equals);
+    expect(counter.result, 25 + 36 + 14 + 14);
+    expect(counter.formula, "75 + 14 =");
+  });
+
+  test('Complex division by zero', () {
+    final counter = CalculatorInternal();
+    counter.perform(CalculatorInput.d9);
+    counter.perform(CalculatorInput.division);
+    counter.perform(CalculatorInput.d0);
+    counter.perform(CalculatorInput.multiply);
+    expect(counter.result, double.infinity);
+
+    counter.perform(CalculatorInput.d5);
+    expect(counter.result, 0.0);
+    expect(counter.formula, "");
+    counter.perform(CalculatorInput.multiply);
+    counter.perform(CalculatorInput.d5);
+    counter.perform(CalculatorInput.equals);
+
+    expect(counter.result, 25.0);
+    expect(counter.formula, "5 x 5 =");
   });
 
   test('Multiple operand subtraction', () {
@@ -107,7 +142,7 @@ void main() {
     counter.perform(CalculatorInput.d5);
     counter.perform(CalculatorInput.equals);
     expect(counter.result, 8.0 - 3.0 - 5.0);
-    expect(counter.formula, "8 - 3 - 5 =");
+    expect(counter.formula, "5 - 5 =");
   });
 
   test('Special button ce', () {

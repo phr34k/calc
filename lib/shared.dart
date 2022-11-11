@@ -57,9 +57,34 @@ class CalculatorInternal {
   List<CalculatorExpression> expression = [];
   String number = "";
   double _result = 0;
+  Exception? _exception;
 
   String _toString(double v) {
-    return v.remainder(1) == 0.0 ? v.toInt().toString() : v.toString();
+    if (v == double.infinity) {
+      return "Cannot divide by zero";
+    } else {
+      return v.remainder(1) == 0.0 ? v.toInt().toString() : v.toString();
+    }
+  }
+
+  double _evaluateOperand(String operand, double a, double b) {
+    double _result = 0;
+    switch (operand) {
+      case "x":
+        _result = a * b;
+        break;
+      case "÷":
+        _result = a / b;
+        break;
+      case "-":
+        _result = a - b;
+        break;
+      case "+":
+        _result = a + b;
+        break;
+    }
+
+    return _result;
   }
 
   double _evaluate() {
@@ -246,7 +271,29 @@ class CalculatorInternal {
       case CalculatorInput.subtraction:
       case CalculatorInput.division:
       case CalculatorInput.multiply:
-        if (number.isEmpty && expression.length == 4) {
+        if (number.isNotEmpty && expression.length == 0) {
+          expression.add(CalculatorValueExpression(double.parse(number)));
+          expression.add(CalculatorOperandExpression("${g[e.index]}"));
+          number = "";
+          _result = (expression[0] as CalculatorValueExpression).value;
+        } else if (number.isNotEmpty && expression.length == 2) {
+          var v = _evaluateOperand(
+              (expression[1] as CalculatorOperandExpression).symbol,
+              (expression[0] as CalculatorValueExpression).value,
+              double.parse(number));
+
+          if (v == double.infinity) {
+            expression.add(CalculatorValueExpression(double.parse(number)));
+            expression.add(CalculatorOperandExpression("${g[e.index]}"));
+            number = "";
+            _result = v;
+          } else {
+            expression[0] = CalculatorValueExpression(v);
+            expression[1] = CalculatorOperandExpression("${g[e.index]}");
+            number = "";
+            _result = (expression[0] as CalculatorValueExpression).value;
+          }
+        } else if (number.isEmpty && expression.length == 4) {
           expression[0] = CalculatorValueExpression(_result);
           expression[1] = CalculatorOperandExpression("${g[e.index]}");
           expression.removeRange(2, 4);
@@ -266,6 +313,7 @@ class CalculatorInternal {
           }
 
           _result = _evaluate();
+          number = "";
         }
 
         /*
@@ -297,6 +345,11 @@ class CalculatorInternal {
       case CalculatorInput.d7:
       case CalculatorInput.d8:
       case CalculatorInput.d9:
+        if (_result == double.infinity) {
+          expression.clear();
+          _result = 0;
+        }
+
         number = "$number${g[e.index]}";
         break;
       default:
