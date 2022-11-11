@@ -241,7 +241,15 @@ class CalculatorInternal {
         break;
 
       case CalculatorInput.equals:
-        if (expression.length == 2 &&
+        if (number.isEmpty &&
+            expression.length == 2 &&
+            expression[1] is CalculatorOperandExpression &&
+            (expression[1] as CalculatorOperandExpression).symbol != "=") {
+          expression.add(CalculatorValueExpression(_result));
+          expression.add(CalculatorOperandExpression("${g[e.index]}"));
+          number = "";
+          _result = _evaluate();
+        } else if (expression.length == 2 &&
             expression[1] is CalculatorOperandExpression &&
             (expression[1] as CalculatorOperandExpression).symbol == "=") {
           expression[0] = CalculatorValueExpression(double.parse(number));
@@ -275,7 +283,12 @@ class CalculatorInternal {
       case CalculatorInput.subtraction:
       case CalculatorInput.division:
       case CalculatorInput.multiply:
-        if (number.isNotEmpty && expression.length == 0) {
+        if (number.isEmpty && expression.length == 0) {
+          expression.add(CalculatorValueExpression(_result));
+          expression.add(CalculatorOperandExpression("${g[e.index]}"));
+          number = "";
+          _result = 0;
+        } else if (number.isNotEmpty && expression.length == 0) {
           expression.add(CalculatorValueExpression(double.parse(number)));
           expression.add(CalculatorOperandExpression("${g[e.index]}"));
           number = "";
