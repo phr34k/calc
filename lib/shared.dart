@@ -681,62 +681,23 @@ mixin CalculatorStateMixin<T extends CalculatorMixin> on State<T> {
           CalculatorActivateIntent(digitCE),
       const SingleActivator(LogicalKeyboardKey.escape):
           CalculatorActivateIntent(digitC),
-      const SingleActivator(LogicalKeyboardKey.digit0):
-          CalculatorActivateIntent(digit0),
-      const SingleActivator(LogicalKeyboardKey.digit1):
-          CalculatorActivateIntent(digit1),
-      const SingleActivator(LogicalKeyboardKey.digit2):
-          CalculatorActivateIntent(digit2),
-      const SingleActivator(LogicalKeyboardKey.digit3):
-          CalculatorActivateIntent(digit3),
-      const SingleActivator(LogicalKeyboardKey.digit4):
-          CalculatorActivateIntent(digit4),
-      const SingleActivator(LogicalKeyboardKey.digit5):
-          CalculatorActivateIntent(digit5),
-      const SingleActivator(LogicalKeyboardKey.digit6):
-          CalculatorActivateIntent(digit6),
-      const SingleActivator(LogicalKeyboardKey.digit7):
-          CalculatorActivateIntent(digit7),
-      const SingleActivator(LogicalKeyboardKey.digit8):
-          CalculatorActivateIntent(digit8),
-      const SingleActivator(LogicalKeyboardKey.digit9):
-          CalculatorActivateIntent(digit9),
-      const SingleActivator(LogicalKeyboardKey.numpad0):
-          CalculatorActivateIntent(digit0),
-      const SingleActivator(LogicalKeyboardKey.numpad1):
-          CalculatorActivateIntent(digit1),
-      const SingleActivator(LogicalKeyboardKey.numpad2):
-          CalculatorActivateIntent(digit2),
-      const SingleActivator(LogicalKeyboardKey.numpad3):
-          CalculatorActivateIntent(digit3),
-      const SingleActivator(LogicalKeyboardKey.numpad4):
-          CalculatorActivateIntent(digit4),
-      const SingleActivator(LogicalKeyboardKey.numpad5):
-          CalculatorActivateIntent(digit5),
-      const SingleActivator(LogicalKeyboardKey.numpad6):
-          CalculatorActivateIntent(digit6),
-      const SingleActivator(LogicalKeyboardKey.numpad7):
-          CalculatorActivateIntent(digit7),
-      const SingleActivator(LogicalKeyboardKey.numpad8):
-          CalculatorActivateIntent(digit8),
-      const SingleActivator(LogicalKeyboardKey.numpad9):
-          CalculatorActivateIntent(digit9),
+      const CharacterActivator("0"): CalculatorActivateIntent(digit0),
+      const CharacterActivator("1"): CalculatorActivateIntent(digit1),
+      const CharacterActivator("2"): CalculatorActivateIntent(digit2),
+      const CharacterActivator("3"): CalculatorActivateIntent(digit3),
+      const CharacterActivator("4"): CalculatorActivateIntent(digit4),
+      const CharacterActivator("5"): CalculatorActivateIntent(digit5),
+      const CharacterActivator("6"): CalculatorActivateIntent(digit6),
+      const CharacterActivator("7"): CalculatorActivateIntent(digit7),
+      const CharacterActivator("8"): CalculatorActivateIntent(digit8),
+      const CharacterActivator("9"): CalculatorActivateIntent(digit9),
       const SingleActivator(LogicalKeyboardKey.enter):
           CalculatorActivateIntent(digitEquals),
-      const SingleActivator(LogicalKeyboardKey.equal):
-          CalculatorActivateIntent(digitEquals),
-      const SingleActivator(LogicalKeyboardKey.minus):
-          CalculatorActivateIntent(digitSubtract),
-      const SingleActivator(LogicalKeyboardKey.add, shift: true):
-          CalculatorActivateIntent(digitAddition),
-      const SingleActivator(LogicalKeyboardKey.numpadDivide):
-          CalculatorActivateIntent(digitDivide),
-      const SingleActivator(LogicalKeyboardKey.slash):
-          CalculatorActivateIntent(digitDivide),
-      const SingleActivator(LogicalKeyboardKey.numpadMultiply):
-          CalculatorActivateIntent(digitMultiply),
-      const SingleActivator(LogicalKeyboardKey.asterisk, shift: true):
-          CalculatorActivateIntent(digitMultiply),
+      const CharacterActivator("="): CalculatorActivateIntent(digitEquals),
+      const CharacterActivator("-"): CalculatorActivateIntent(digitSubtract),
+      const CharacterActivator("+"): CalculatorActivateIntent(digitAddition),
+      const CharacterActivator("/"): CalculatorActivateIntent(digitDivide),
+      const CharacterActivator("*"): CalculatorActivateIntent(digitMultiply)
     };
   }
 
