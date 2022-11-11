@@ -145,13 +145,55 @@ void main() {
     expect(counter.formula, "5 - 5 =");
   });
 
+  test('Negative number support', () {
+    final counter = CalculatorInternal();
+    counter.perform(CalculatorInput.subtraction);
+    counter.perform(CalculatorInput.d5);
+    counter.perform(CalculatorInput.equals);
+    expect(counter.formula, "0 - 5 =");
+    expect(counter.result, -5.0);
+  });
+
+  test('Implicit value expression', () {
+    final counter = CalculatorInternal();
+    counter.perform(CalculatorInput.d3);
+    counter.perform(CalculatorInput.multiply);
+    counter.perform(CalculatorInput.equals);
+    expect(counter.formula, "3 x 3 =");
+    expect(counter.result, 9.0);
+  });
+
+  test('input dot', () {
+    final counter = CalculatorInternal();
+    counter.perform(CalculatorInput.d9);
+    counter.perform(CalculatorInput.dot);
+    counter.perform(CalculatorInput.d0);
+    counter.perform(CalculatorInput.d0);
+    counter.perform(CalculatorInput.dot);
+    expect(counter.d0, "9.00");
+    expect(counter.result, 0.0);
+  });
+
   test('Special button ce', () {
+    final counter = CalculatorInternal();
+    counter.perform(CalculatorInput.d9);
+    counter.perform(CalculatorInput.multiply);
+    counter.perform(CalculatorInput.d3);
+    counter.perform(CalculatorInput.ce);
+    expect(counter.formula, "9 x");
+    expect(counter.result, 0.0);
+    counter.perform(CalculatorInput.equals);
+    expect(counter.formula, "9 x 0 =");
+    expect(counter.result, 0.0);
+  });
+
+  test('Special button c', () {
     final counter = CalculatorInternal();
     counter.perform(CalculatorInput.d8);
     counter.perform(CalculatorInput.subtraction);
     counter.perform(CalculatorInput.d3);
     counter.perform(CalculatorInput.equals);
-    counter.perform(CalculatorInput.ce);
+    counter.perform(CalculatorInput.c);
     expect(counter.formula, "");
     expect(counter.result, 0.0);
   });

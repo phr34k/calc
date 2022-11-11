@@ -129,14 +129,18 @@ class CalculatorInternal {
   }
 
   void _c() {
+    expression.clear();
     number = "";
     _result = 0;
   }
 
   void _ce() {
-    expression.clear();
-    number = "";
-    _result = 0;
+    if (number.isNotEmpty || expression.length == 2) {
+      number = "";
+      _result = 0;
+    } else {
+      _c();
+    }
   }
 
   /*
