@@ -4,6 +4,15 @@ library calc;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+class CalculatorException implements Exception {
+  String debug;
+  CalculatorException(this.debug);
+
+  String errorMessage() {
+    return "you cannot enter amount less then 0";
+  }
+}
+
 enum CalculatorInput {
   equals,
   subtraction,
