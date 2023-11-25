@@ -36,18 +36,15 @@ enum CalculatorInput {
 }
 
 class CalculatorNumberRange extends TextRange {
-  const CalculatorNumberRange({required int start, required int end})
-      : super(start: start, end: end);
+  const CalculatorNumberRange({required super.start, required super.end});
 }
 
 class CalculatorOperandRange extends TextRange {
-  const CalculatorOperandRange({required int start, required int end})
-      : super(start: start, end: end);
+  const CalculatorOperandRange({required super.start, required super.end});
 }
 
 class CalculatorEqualsRange extends TextRange {
-  const CalculatorEqualsRange({required int start, required int end})
-      : super(start: start, end: end);
+  const CalculatorEqualsRange({required super.start, required super.end});
 }
 
 abstract class CalculatorExpression {}
@@ -76,54 +73,54 @@ class CalculatorInternal {
   }
 
   double _evaluateOperand(String operand, double a, double b) {
-    double _result = 0;
+    double result = 0;
     switch (operand) {
       case "x":
-        _result = a * b;
+        result = a * b;
         break;
       case "÷":
-        _result = a / b;
+        result = a / b;
         break;
       case "-":
-        _result = a - b;
+        result = a - b;
         break;
       case "+":
-        _result = a + b;
+        result = a + b;
         break;
     }
 
-    return _result;
+    return result;
   }
 
   double _evaluate() {
-    double _result = 0;
+    double result = 0;
 
     if (expression.isNotEmpty) {
-      _result = (expression[0] as CalculatorValueExpression).value;
+      result = (expression[0] as CalculatorValueExpression).value;
     }
 
     if (expression.length > 2) {
       switch ((expression[1] as CalculatorOperandExpression).symbol) {
         case "x":
-          _result =
-              (_result) * ((expression[2] as CalculatorValueExpression).value);
+          result =
+              (result) * ((expression[2] as CalculatorValueExpression).value);
           break;
         case "÷":
-          _result =
-              (_result) / ((expression[2] as CalculatorValueExpression).value);
+          result =
+              (result) / ((expression[2] as CalculatorValueExpression).value);
           break;
         case "-":
-          _result =
-              (_result) - ((expression[2] as CalculatorValueExpression).value);
+          result =
+              (result) - ((expression[2] as CalculatorValueExpression).value);
           break;
         case "+":
-          _result =
-              (_result) + ((expression[2] as CalculatorValueExpression).value);
+          result =
+              (result) + ((expression[2] as CalculatorValueExpression).value);
           break;
       }
     }
 
-    return _result;
+    return result;
   }
 
   String _generateFormulate(List<CalculatorExpression> expressions) {
@@ -761,6 +758,7 @@ mixin CalculatorStateMixin<T extends CalculatorMixin> on State<T> {
               fixedSize: Size(width, height),
               textStyle: TextStyle(
                   fontWeight: primary ? FontWeight.bold : FontWeight.normal)),
+          onPressed: f,
           child: Align(
               alignment: Alignment.center,
               child: Text(
@@ -768,7 +766,6 @@ mixin CalculatorStateMixin<T extends CalculatorMixin> on State<T> {
                 textAlign: TextAlign.center,
                 style: const TextStyle(fontSize: 16),
               )),
-          onPressed: f,
         ));
   }
 

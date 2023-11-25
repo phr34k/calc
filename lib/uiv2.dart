@@ -9,8 +9,8 @@ class CalcDialog2 extends StatefulWidget with CalculatorMixin {
   final bool cancel;
   @override
   final String title;
-  const CalcDialog2({Key? key, this.cancel = false, this.title = "Calculator"})
-      : super(key: key);
+  const CalcDialog2(
+      {super.key, this.cancel = false, this.title = "Calculator"});
   @override
   CalcDialog2State createState() => CalcDialog2State();
 }
