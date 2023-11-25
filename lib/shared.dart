@@ -66,7 +66,6 @@ class CalculatorInternal {
   List<CalculatorExpression> expression = [];
   String number = "";
   double _result = 0;
-  Exception? _exception;
 
   String _toString(double v) {
     if (v == double.infinity) {
@@ -292,12 +291,12 @@ class CalculatorInternal {
       case CalculatorInput.subtraction:
       case CalculatorInput.division:
       case CalculatorInput.multiply:
-        if (number.isEmpty && expression.length == 0) {
+        if (number.isEmpty && expression.isEmpty) {
           expression.add(CalculatorValueExpression(_result));
           expression.add(CalculatorOperandExpression("${g[e.index]}"));
           number = "";
           _result = 0;
-        } else if (number.isNotEmpty && expression.length == 0) {
+        } else if (number.isNotEmpty && expression.isEmpty) {
           expression.add(CalculatorValueExpression(double.parse(number)));
           expression.add(CalculatorOperandExpression("${g[e.index]}"));
           number = "";
