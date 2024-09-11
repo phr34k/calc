@@ -784,6 +784,7 @@ mixin CalculatorStateMixin<T extends CalculatorMixin> on State<T> {
                   })
                 },
                 child: AlertDialog(
+                  scrollable: true,
                   title: Row(
                     children: [
                       Expanded(child: Text(widget.title)),
@@ -793,8 +794,9 @@ mixin CalculatorStateMixin<T extends CalculatorMixin> on State<T> {
                   content: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      SizedBox(
-                          width: 290,
+                      Container(
+                          constraints:
+                              const BoxConstraints.tightFor(width: 290),
                           child: SingleChildScrollView(
                               reverse: true,
                               scrollDirection: Axis.horizontal,
@@ -805,8 +807,9 @@ mixin CalculatorStateMixin<T extends CalculatorMixin> on State<T> {
                                     color: Colors.blueGrey,
                                     fontSize: equationFontSize),
                               ))),
-                      SizedBox(
-                          width: 290,
+                      Container(
+                          constraints:
+                              const BoxConstraints.tightFor(width: 290),
                           child: SingleChildScrollView(
                               reverse: true,
                               scrollDirection: Axis.horizontal,
